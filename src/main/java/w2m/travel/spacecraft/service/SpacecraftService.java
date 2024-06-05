@@ -1,6 +1,7 @@
 package w2m.travel.spacecraft.service;
 
 
+import ch.qos.logback.core.util.StringUtil;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
@@ -52,8 +53,11 @@ public class SpacecraftService {
         repository.deleteById(id);
     }
 
-    public Page<Spacecraft> findAll(Pageable pageable) {
-        return repository.findAll(pageable);
-
+    public Page<Spacecraft> findAll(String name, Pageable pageable) {
+        if (StringUtil.isNullOrEmpty(name)) {
+            return repository.findAll(pageable);
+        } else {
+            return repository.findByNameContaining(name, pageable);
+        }
     }
 }

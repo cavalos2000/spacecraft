@@ -16,6 +16,7 @@ import org.springframework.data.domain.Pageable;
 import w2m.travel.spacecraft.model.Spacecraft;
 import w2m.travel.spacecraft.repository.SpacecraftRepository;
 
+import java.util.Arrays;
 import java.util.Collections;
 import java.util.List;
 import java.util.Optional;
@@ -102,8 +103,25 @@ class SpacecraftServiceTest {
 
         given(repository.findAll(pageable)).willReturn(page);
 
-        assertEquals(page, service.findAll(pageable));
+        assertEquals(page, service.findAll("", pageable));
         verify(repository, times(1)).findAll(pageable);
+    }
+
+    @Test
+    void findAll_shouldReturnPageOfSpacecraftsWithName() {
+        Spacecraft spacecraft = new Spacecraft();
+        spacecraft.setId(1L);
+        spacecraft.setName("name");
+        spacecraft.setModel("model");
+
+        List<Spacecraft> spacecrafts = Arrays.asList(spacecraft);
+        Page<Spacecraft> page = new PageImpl<>(spacecrafts);
+        Pageable pageable = PageRequest.of(0, 10);
+
+        given(repository.findByNameContaining("name", pageable)).willReturn(page);
+
+        assertEquals(page, service.findAll("name", pageable));
+        verify(repository, times(1)).findByNameContaining("name", pageable);
     }
 }
 
