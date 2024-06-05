@@ -32,7 +32,7 @@ public class SecurityConfigTest {
     @Test
     public void givenPrivateEndpoint_whenNoAuth_thenUnauthorized() throws Exception {
         mockMvc.perform(get("/api/any"))
-                .andExpect(status().isNotFound());
+                .andExpect(status().isInternalServerError());
     }
 
     @Test

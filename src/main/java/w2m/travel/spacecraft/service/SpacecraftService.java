@@ -6,11 +6,13 @@ import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import jakarta.annotation.PostConstruct;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import w2m.travel.spacecraft.aspect.CheckNegativeId;
+import w2m.travel.spacecraft.exception.SpacecraftNotFoundException;
 import w2m.travel.spacecraft.model.Spacecraft;
 import w2m.travel.spacecraft.repository.SpacecraftRepository;
 
@@ -18,6 +20,7 @@ import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
+@Slf4j
 public class SpacecraftService {
 
     @Autowired
@@ -28,13 +31,18 @@ public class SpacecraftService {
 
     @PostConstruct
     public void init() {
-        spacecraftCache = CacheBuilder.newBuilder()
-                .maximumSize(100)
-                .expireAfterAccess(10, TimeUnit.MINUTES)
+        CacheBuilder<Object, Object> objectObjectCacheBuilder = CacheBuilder.newBuilder();
+        objectObjectCacheBuilder.maximumSize(100);
+        objectObjectCacheBuilder.expireAfterAccess(10, TimeUnit.MINUTES);
+        spacecraftCache = objectObjectCacheBuilder
                 .build(new CacheLoader<>() {
                     @Override
                     public Spacecraft load(Long id) {
-                        return repository.findById(id).orElseThrow();
+                        return repository.findById(id)
+                                .orElseThrow(() -> {
+                                    log.error("Spacecraft not found for ID: {}", id);
+                                    return new SpacecraftNotFoundException("Spacecraft not found for this ID :: " + id);
+                                });
                     }
                 });
     }
