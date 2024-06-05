@@ -2,5 +2,6 @@ CREATE TABLE spacecraft (
     id BIGINT AUTO_INCREMENT PRIMARY KEY,
     name VARCHAR(255) NOT NULL,
     model VARCHAR(255),
-    launch_date DATE
+    manufacture_date DATE,
+    weight DECIMAL(10, 2)
 );

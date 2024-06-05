@@ -13,6 +13,9 @@ import org.springframework.test.web.servlet.MockMvc;
 import w2m.travel.spacecraft.model.Spacecraft;
 import w2m.travel.spacecraft.service.SpacecraftService;
 
+import java.math.BigDecimal;
+import java.time.LocalDate;
+
 import static org.mockito.ArgumentMatchers.any;
 import static org.mockito.ArgumentMatchers.anyLong;
 import static org.mockito.BDDMockito.given;
@@ -42,6 +45,8 @@ public class SpacecraftControllerTest {
         spacecraft.setId(1L);
         spacecraft.setName("Apollo");
         spacecraft.setModel("model");
+        spacecraft.setWeight(new BigDecimal(100));
+        spacecraft.setManufactureDate(LocalDate.now());
 
     }
 
@@ -64,7 +69,8 @@ public class SpacecraftControllerTest {
                         .contentType(MediaType.APPLICATION_JSON))
                 .andExpect(status().isOk())
                 .andExpect(jsonPath("$.id").value(1L))
-                .andExpect(jsonPath("$.name").value("Apollo"));
+                .andExpect(jsonPath("$.name").value("Apollo"))
+                .andExpect(jsonPath("$.weight").value(100));
     }
 
     @Test
