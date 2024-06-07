@@ -1,9 +1,10 @@
 package worktomeet.travel.spacecraft.config;
 
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.authentication.AuthenticationManager;
-import org.springframework.security.config.annotation.authentication.builders.AuthenticationManagerBuilder;
+import org.springframework.security.config.annotation.authentication.configuration.AuthenticationConfiguration;
 import org.springframework.security.config.annotation.method.configuration.EnableMethodSecurity;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
 import org.springframework.security.config.annotation.web.configuration.EnableWebSecurity;
@@ -21,13 +22,19 @@ import worktomeet.travel.spacecraft.security.JwtRequestFilter;
 @EnableMethodSecurity
 public class SecurityConfig {
 
+    @Value("${service.security.user.username}")
+    private String username;
+    @Value("${service.security.user.password}")
+    private String password;
+    @Value("${service.security.user.role}")
+    private String role;
     @Bean
     public SecurityFilterChain securityFilterChain(HttpSecurity http,
                                                    JwtRequestFilter jwtRequestFilter) throws Exception {
 
         return http
 
-                .authorizeRequests(auth -> auth
+                .authorizeHttpRequests(auth -> auth
                         .requestMatchers("/login").permitAll()
                         .requestMatchers("/swagger-ui/**",
                                 "/swagger-resources/*",
@@ -41,11 +48,11 @@ public class SecurityConfig {
     @Bean
     public UserDetailsService userDetailsService() {
         return username -> {
-            if ("user".equals(username)) {
+            if (this.username.equals(username)) {
                 return User.builder()
-                        .username("user")
-                        .password(passwordEncoder().encode("pass"))
-                        .roles("USER")
+                        .username(this.username)
+                        .password(passwordEncoder().encode(this.password))
+                        .roles(this.role)
                         .build();
             } else {
                 throw new UsernameNotFoundException("User not found");
@@ -59,9 +66,7 @@ public class SecurityConfig {
     }
 
     @Bean
-    public AuthenticationManager authenticationManager(HttpSecurity http) throws Exception {
-        AuthenticationManagerBuilder authenticationManagerBuilder = http.getSharedObject(AuthenticationManagerBuilder.class);
-        authenticationManagerBuilder.userDetailsService(userDetailsService()).passwordEncoder(passwordEncoder());
-        return authenticationManagerBuilder.build();
+    public AuthenticationManager authenticationManager(AuthenticationConfiguration authenticationConfiguration) throws Exception {
+        return authenticationConfiguration.getAuthenticationManager();
     }
 }

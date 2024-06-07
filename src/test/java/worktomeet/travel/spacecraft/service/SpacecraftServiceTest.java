@@ -9,8 +9,8 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.context.SpringBootTest;
 import org.springframework.boot.test.mock.mockito.MockBean;
 import org.springframework.test.context.junit.jupiter.SpringExtension;
-import worktomeet.travel.spacecraft.dto.SpacecraftDTO;
-import worktomeet.travel.spacecraft.dto.SpacecraftRequestDTO;
+import worktomeet.travel.spacecraft.dto.SpacecraftDto;
+import worktomeet.travel.spacecraft.dto.SpacecraftRequestDto;
 import worktomeet.travel.spacecraft.model.Spacecraft;
 import worktomeet.travel.spacecraft.repository.SpacecraftRepository;
 
@@ -38,7 +38,7 @@ class SpacecraftServiceTest {
     private LoadingCache<Long, Spacecraft> spacecraftCache;
 
     private Spacecraft spacecraft;
-    private SpacecraftRequestDTO spacecraftRequestDTO;
+    private SpacecraftRequestDto spacecraftRequestDto;
 
     @BeforeEach
     void setUp() {
@@ -46,7 +46,7 @@ class SpacecraftServiceTest {
         spacecraft.setId(1L);
         spacecraft.setName("Apollo");
 
-        spacecraftRequestDTO = new SpacecraftRequestDTO("Apollo", "model", null, null);
+        spacecraftRequestDto = new SpacecraftRequestDto("Apollo", "model", null, null);
 
         MockitoAnnotations.openMocks(this);
 
@@ -57,21 +57,21 @@ class SpacecraftServiceTest {
 
     @Test
     void testGetSpacecraft() {
-        SpacecraftDTO dto = service.getSpacecraft(1L);
+        SpacecraftDto dto = service.getSpacecraft(1L);
         assertNotNull(dto);
         assertEquals("Apollo", dto.getName());
     }
 
     @Test
     void testCreateSpacecraft() {
-        SpacecraftDTO dto = service.createSpacecraft(spacecraftRequestDTO);
+        SpacecraftDto dto = service.createSpacecraft(spacecraftRequestDto);
         assertNotNull(dto);
         assertEquals("Apollo", dto.getName());
     }
 
     @Test
     void testUpdateSpacecraft() {
-        SpacecraftDTO dto = service.updatetSpacecraft(1L, spacecraftRequestDTO);
+        SpacecraftDto dto = service.updatetSpacecraft(1L, spacecraftRequestDto);
         assertNotNull(dto);
         assertEquals("Apollo", dto.getName());
     }
@@ -80,11 +80,6 @@ class SpacecraftServiceTest {
     void testDeleteSpacecraft() {
         assertDoesNotThrow(() -> service.deleteSpacecraft(1L));
         verify(repository, times(1)).deleteById(1L);
-    }
-
-    @Test
-    void testFindAll() {
-        // Test the findAll method here
     }
 
 }

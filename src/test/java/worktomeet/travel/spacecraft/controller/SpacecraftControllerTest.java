@@ -10,8 +10,8 @@ import org.springframework.data.domain.Page;
 import org.springframework.http.MediaType;
 import org.springframework.security.test.context.support.WithMockUser;
 import org.springframework.test.web.servlet.MockMvc;
-import worktomeet.travel.spacecraft.dto.SpacecraftDTO;
-import worktomeet.travel.spacecraft.dto.SpacecraftRequestDTO;
+import worktomeet.travel.spacecraft.dto.SpacecraftDto;
+import worktomeet.travel.spacecraft.dto.SpacecraftRequestDto;
 import worktomeet.travel.spacecraft.service.SpacecraftService;
 
 import java.math.BigDecimal;
@@ -38,11 +38,11 @@ public class SpacecraftControllerTest {
     @MockBean
     private SpacecraftService spacecraftService;
 
-    private SpacecraftDTO spacecraftDTO;
+    private SpacecraftDto spacecraftDto;
 
     @BeforeEach
     void setUp() {
-        spacecraftDTO = new SpacecraftDTO(1L,
+        spacecraftDto = new SpacecraftDto(1L,
                 "Apollo",
                 "model",
                 LocalDate.now(),
@@ -54,7 +54,7 @@ public class SpacecraftControllerTest {
     @Test
     @WithMockUser(username = "user", password = "pass", roles = "USER")
     void getAllSpacecrafts() throws Exception {
-        given(spacecraftService.findAll(any(), any())).willReturn(Page.empty());
+        given(spacecraftService.findAll(any())).willReturn(Page.empty());
 
         mockMvc.perform(get("/api/spacecrafts")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -64,7 +64,7 @@ public class SpacecraftControllerTest {
     @Test
     @WithMockUser(username = "user", password = "pass", roles = "USER")
     void getSpacecraft() throws Exception {
-        given(spacecraftService.getSpacecraft(anyLong())).willReturn(spacecraftDTO);
+        given(spacecraftService.getSpacecraft(anyLong())).willReturn(spacecraftDto);
 
         mockMvc.perform(get("/api/spacecrafts/1")
                         .contentType(MediaType.APPLICATION_JSON))
@@ -77,7 +77,7 @@ public class SpacecraftControllerTest {
     @Test
     @WithMockUser(username = "user", password = "pass", roles = "USER")
     void createSpacecraft() throws Exception {
-        given(spacecraftService.createSpacecraft(any(SpacecraftRequestDTO.class))).willReturn(spacecraftDTO);
+        given(spacecraftService.createSpacecraft(any(SpacecraftRequestDto.class))).willReturn(spacecraftDto);
 
         mockMvc.perform(post("/api/spacecrafts")
                         .contentType(MediaType.APPLICATION_JSON)
@@ -90,9 +90,9 @@ public class SpacecraftControllerTest {
     @Test
     @WithMockUser(username = "user", password = "pass", roles = "USER")
     void updateSpacecraft() throws Exception {
-        SpacecraftDTO spacecraft = new SpacecraftDTO(1L, "Apollo Updated", null, null, null);
+        SpacecraftDto spacecraft = new SpacecraftDto(1L, "Apollo Updated", null, null, null);
 
-        given(spacecraftService.updatetSpacecraft(any(Long.class), any(SpacecraftRequestDTO.class))).willReturn(spacecraft);
+        given(spacecraftService.updatetSpacecraft(any(Long.class), any(SpacecraftRequestDto.class))).willReturn(spacecraft);
 
         mockMvc.perform(put("/api/spacecrafts/1")
                         .contentType(MediaType.APPLICATION_JSON)

@@ -6,7 +6,7 @@ import org.mapstruct.factory.Mappers;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.domain.PageRequest;
-import worktomeet.travel.spacecraft.dto.SpacecraftDTO;
+import worktomeet.travel.spacecraft.dto.SpacecraftDto;
 import worktomeet.travel.spacecraft.model.Spacecraft;
 
 import java.math.BigDecimal;
@@ -27,7 +27,7 @@ class SpacecraftMapperTest {
 
     @Test
     void testToModel() {
-        SpacecraftDTO dto = new SpacecraftDTO(1L,
+        SpacecraftDto dto = new SpacecraftDto(1L,
                 "Apollo",
                 "model",
                 LocalDate.now(),
@@ -41,12 +41,12 @@ class SpacecraftMapperTest {
     }
 
     @Test
-    void testToDTO() {
+    void testToDto() {
         Spacecraft model = new Spacecraft();
         model.setId(1L);
         model.setName("Apollo");
 
-        SpacecraftDTO dto = mapper.toDTO(model);
+        SpacecraftDto dto = mapper.toDto(model);
         assertNotNull(dto);
         assertEquals(1L, dto.getId());
         assertEquals("Apollo", dto.getName());
@@ -54,8 +54,8 @@ class SpacecraftMapperTest {
 
     @Test
     void testToModelList() {
-        SpacecraftDTO dto1 = new SpacecraftDTO(1L, "Apollo", "model", null, null);
-        SpacecraftDTO dto2 = new SpacecraftDTO(2L, "Challenger", "model", null, null);
+        SpacecraftDto dto1 = new SpacecraftDto(1L, "Apollo", "model", null, null);
+        SpacecraftDto dto2 = new SpacecraftDto(2L, "Challenger", "model", null, null);
 
 
         List<Spacecraft> models = mapper.toModelList(Arrays.asList(dto1, dto2));
@@ -66,7 +66,7 @@ class SpacecraftMapperTest {
     }
 
     @Test
-    void testToDTOList() {
+    void testToDtoList() {
         Spacecraft model1 = new Spacecraft();
         model1.setId(1L);
         model1.setName("Apollo");
@@ -75,7 +75,7 @@ class SpacecraftMapperTest {
         model2.setId(2L);
         model2.setName("Challenger");
 
-        List<SpacecraftDTO> dtos = mapper.toDTOList(Arrays.asList(model1, model2));
+        List<SpacecraftDto> dtos = mapper.toDtoList(Arrays.asList(model1, model2));
         assertNotNull(dtos);
         assertEquals(2, dtos.size());
         assertEquals("Apollo", dtos.get(0).getName());
@@ -83,7 +83,7 @@ class SpacecraftMapperTest {
     }
 
     @Test
-    void testToDTOPage() {
+    void testToDtoPage() {
         Spacecraft model1 = new Spacecraft();
         model1.setId(1L);
         model1.setName("Apollo");
@@ -93,7 +93,7 @@ class SpacecraftMapperTest {
         model2.setName("Challenger");
 
         Page<Spacecraft> modelPage = new PageImpl<>(Arrays.asList(model1, model2), PageRequest.of(0, 10), 2);
-        Page<SpacecraftDTO> dtoPage = mapper.toDTOPage(modelPage);
+        Page<SpacecraftDto> dtoPage = mapper.toDtoPage(modelPage);
 
         assertNotNull(dtoPage);
         assertEquals(2, dtoPage.getTotalElements());

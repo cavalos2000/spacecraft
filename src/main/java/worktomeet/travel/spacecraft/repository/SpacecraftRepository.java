@@ -1,12 +1,12 @@
 package worktomeet.travel.spacecraft.repository;
 
 
-import org.springframework.data.domain.Page;
-import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
 import worktomeet.travel.spacecraft.model.Spacecraft;
 
+import java.util.List;
+
 public interface SpacecraftRepository extends JpaRepository<Spacecraft, Long> {
 
-    Page<Spacecraft> findByNameContaining(String name, Pageable pageable);
+    List<Spacecraft> findByNameContaining(String name);
 }

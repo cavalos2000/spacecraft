@@ -13,7 +13,7 @@ public class NegativeIdAspect {
 
     @Before("@annotation(CheckNegativeId) && args(id,..)")
     public void checkNegativeId(JoinPoint joinPoint, Long id) {
-        if (id < 0) {
+        if (id <= 0) {
             log.info("line added by aspect when Id is negative");
             throw new IllegalArgumentException("ID cannot be negative: " + id);
         }

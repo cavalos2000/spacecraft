@@ -1,19 +1,19 @@
 package worktomeet.travel.spacecraft.mapper;
 
 import org.junit.jupiter.api.Test;
-import worktomeet.travel.spacecraft.dto.SpacecraftRequestDTO;
+import worktomeet.travel.spacecraft.dto.SpacecraftRequestDto;
 import worktomeet.travel.spacecraft.model.Spacecraft;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertNotNull;
 
-class SpacecraftRequestDTOMapperTest {
+class SpacecraftRequestDtoMapperTest {
 
-    private final SpacecraftRequestDTOMapper mapper = SpacecraftRequestDTOMapper.INSTANCE;
+    private final SpacecraftRequestDtoMapper mapper = SpacecraftRequestDtoMapper.instance;
 
     @Test
     void testToModel() {
-        SpacecraftRequestDTO dto = new SpacecraftRequestDTO("name", "model", null, null);
+        SpacecraftRequestDto dto = new SpacecraftRequestDto("name", "model", null, null);
 
         Spacecraft spacecraft = mapper.toModel(dto);
         assertNotNull(spacecraft);

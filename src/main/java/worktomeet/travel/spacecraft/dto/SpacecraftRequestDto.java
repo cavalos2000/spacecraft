@@ -3,20 +3,16 @@ package worktomeet.travel.spacecraft.dto;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 
-public final class SpacecraftDTO {
-
-    private Long id;
+public final class SpacecraftRequestDto {
     private String name;
     private String model;
     private LocalDate manufactureDate;
     private BigDecimal weight;
 
-    public SpacecraftDTO(Long id,
-                         String name,
-                         String model,
-                         LocalDate manufactureDate,
-                         BigDecimal weight) {
-        this.id = id;
+    public SpacecraftRequestDto(String name,
+                                String model,
+                                LocalDate manufactureDate,
+                                BigDecimal weight) {
         this.name = name;
         this.model = model;
         this.manufactureDate = manufactureDate;
@@ -37,9 +33,5 @@ public final class SpacecraftDTO {
 
     public String getName() {
         return name;
-    }
-
-    public Long getId() {
-        return id;
     }
 }

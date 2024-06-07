@@ -36,9 +36,9 @@ public class SecurityConfigTest {
     }
 
     @Test
-    @WithMockUser(username = "user", password = "pass", roles = "USER")
+    @WithMockUser(username = "testUser", password = "testPass", roles = "USER")
     public void givenPrivateEndpoint_whenWithAuth_thenSuccess() throws Exception {
-        mockMvc.perform(get("/api/spacecrafts"))
+        mockMvc.perform(get("/api/spacecrafts/byName?name=name"))
                 .andExpect(status().isOk());
     }
 

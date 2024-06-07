@@ -1,25 +1,29 @@
 package worktomeet.travel.spacecraft.service;
 
 
-import ch.qos.logback.core.util.StringUtil;
 import com.google.common.cache.CacheBuilder;
 import com.google.common.cache.CacheLoader;
 import com.google.common.cache.LoadingCache;
 import jakarta.annotation.PostConstruct;
+import jakarta.validation.Validator;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.stereotype.Service;
 import worktomeet.travel.spacecraft.aspect.CheckNegativeId;
-import worktomeet.travel.spacecraft.dto.SpacecraftDTO;
-import worktomeet.travel.spacecraft.dto.SpacecraftRequestDTO;
+import worktomeet.travel.spacecraft.dto.PageableDto;
+import worktomeet.travel.spacecraft.dto.SpacecraftDto;
+import worktomeet.travel.spacecraft.dto.SpacecraftRequestDto;
+import worktomeet.travel.spacecraft.exception.InvalidSpacecraftDataException;
 import worktomeet.travel.spacecraft.exception.SpacecraftNotFoundException;
 import worktomeet.travel.spacecraft.mapper.SpacecraftMapper;
-import worktomeet.travel.spacecraft.mapper.SpacecraftRequestDTOMapper;
+import worktomeet.travel.spacecraft.mapper.SpacecraftRequestDtoMapper;
 import worktomeet.travel.spacecraft.model.Spacecraft;
 import worktomeet.travel.spacecraft.repository.SpacecraftRepository;
+import worktomeet.travel.spacecraft.util.PageableUtil;
 
+import java.util.List;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -27,9 +31,10 @@ import java.util.concurrent.TimeUnit;
 public class SpacecraftService {
 
     @Autowired
+    private Validator validator;
+    @Autowired
     private SpacecraftRepository repository;
     LoadingCache<Long, Spacecraft> spacecraftCache;
-    
 
     @PostConstruct
     public void init() {
@@ -50,33 +55,37 @@ public class SpacecraftService {
     }
 
     @CheckNegativeId
-    public SpacecraftDTO getSpacecraft(Long id) {
-        return SpacecraftMapper.INSTANCE.toDTO(spacecraftCache.getUnchecked(id));
+    public SpacecraftDto getSpacecraft(Long id) {
+        return SpacecraftMapper.instance.toDto(spacecraftCache.getUnchecked(id));
     }
 
-    public SpacecraftDTO createSpacecraft(SpacecraftRequestDTO spacecraftRequestDTO) {
-        if (spacecraftRequestDTO == null) {
-            throw new IllegalArgumentException("SpacecraftDTO cannot be null");
+    public SpacecraftDto createSpacecraft(SpacecraftRequestDto spacecraftRequestDto) {
+        if (spacecraftRequestDto == null) {
+            throw new InvalidSpacecraftDataException("SpacecraftDto cannot be null");
+        }
+        var violations = validator.validate(spacecraftRequestDto);
+        if (!violations.isEmpty()) {
+            throw new InvalidSpacecraftDataException(violations.iterator().next().getMessage());
         }
 
-        try {
-            Spacecraft spacecraft = SpacecraftRequestDTOMapper.INSTANCE.toModel(spacecraftRequestDTO);
-            Spacecraft savedSpacecraft = repository.save(spacecraft);
-            SpacecraftDTO savedSpacecraftDTO = SpacecraftMapper.INSTANCE.toDTO(savedSpacecraft);
+        Spacecraft spacecraft = SpacecraftRequestDtoMapper.instance.toModel(spacecraftRequestDto);
+        Spacecraft savedSpacecraft = repository.save(spacecraft);
 
-            return savedSpacecraftDTO;
-        } catch (Exception e) {
-            throw new RuntimeException("Failed to create spacecraft", e);
-        }
+        return SpacecraftMapper.instance.toDto(savedSpacecraft);
+
     }
-    public SpacecraftDTO updatetSpacecraft(Long id, SpacecraftRequestDTO spacecraftRequestDTO) {
+    public SpacecraftDto updatetSpacecraft(Long id, SpacecraftRequestDto spacecraftRequestDto) {
+        var violations = validator.validate(spacecraftRequestDto);
+        if (!violations.isEmpty()) {
+            throw new InvalidSpacecraftDataException(violations.iterator().next().getMessage());
+        }
         if (id == null) {
-            throw new IllegalArgumentException("SpacecraftDTO cannot be null");
+            throw new InvalidSpacecraftDataException("SpacecraftDto cannot be null");
         }
-        Spacecraft spacecraft = SpacecraftRequestDTOMapper.INSTANCE.toModel(spacecraftRequestDTO);
+        Spacecraft spacecraft = SpacecraftRequestDtoMapper.instance.toModel(spacecraftRequestDto);
         spacecraft.setId(id);
 
-        return SpacecraftMapper.INSTANCE.toDTO(repository.save(spacecraft));
+        return SpacecraftMapper.instance.toDto(repository.save(spacecraft));
     }
 
     public void deleteSpacecraft(Long id) {
@@ -84,11 +93,11 @@ public class SpacecraftService {
         repository.deleteById(id);
     }
 
-    public Page<SpacecraftDTO> findAll(String name, Pageable pageable) {
-        if (StringUtil.isNullOrEmpty(name)) {
-            return SpacecraftMapper.INSTANCE.toDTOPage(repository.findAll(pageable));
-        } else {
-            return SpacecraftMapper.INSTANCE.toDTOPage(repository.findByNameContaining(name, pageable));
-        }
+    public Page<SpacecraftDto> findAll(PageableDto pageable) {
+        return SpacecraftMapper.instance.toDtoPage(repository.findAll(PageableUtil.createPageable(pageable)));
+    }
+
+    public List<SpacecraftDto> findByNameContaining(String name) {
+        return SpacecraftMapper.instance.toDtoList(repository.findByNameContaining(name));
     }
 }
