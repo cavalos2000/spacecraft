@@ -29,47 +29,6 @@ mvn jacoco:report
 reports are available on :
 target/site/jacoco/index.html
 
-## Json examples to request
-
-# to create a spacecraft :
-
-curl -X POST http://localhost:8080/api/spacecrafts \
--u user:pass \
--H "Content-Type: application/json" \
--d '{
-"name": "nameExample",
-"model": "model1",
-"manufactureDate": "2023-06-05",
-"weight": 100
-}'
-
-# to get a spacecraft by id :
-
-curl -X GET http://localhost:8080/api/spacecrafts/1 \
--u user:pass
-
-# to get a paginated spacecraft list and/or filtering name% :
-
-curl -X GET "http://localhost:8080/api/spacecrafts?page=0&size=10&name=na" \
--u user:pass
-
-# update
-
-curl -X PUT http://localhost:8080/api/spacecrafts/1 \
--u user:pass \
--H "Content-Type: application/json" \
--d '{
-"name": "nameUpdated",
-"model": "model",
-"manufactureDate": "2023-06-05",
-"weight": 100
-}'
-
-# delete 
-
-curl -X DELETE http://localhost:8080/api/spacecrafts/1 \
--u user:pass
-
 ## Name
 Spacecraft app
 
