@@ -1,6 +1,7 @@
 package worktomeet.travel.spacecraft.web;
 
 import io.swagger.v3.oas.annotations.Operation;
+import io.swagger.v3.oas.annotations.security.SecurityRequirement;
 import io.swagger.v3.oas.annotations.tags.Tag;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
@@ -22,6 +23,7 @@ import worktomeet.travel.spacecraft.service.SpacecraftService;
 
 @RestController
 @RequestMapping("/api/spacecrafts")
+@SecurityRequirement(name = "bearerAuth")
 @Tag(name = "Spacecraft Controller", description = "Allow to manage spacecrafts")
 
 public class SpacecraftController {
