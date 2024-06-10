@@ -12,7 +12,7 @@ default user and pass defined in Dockerfile are user/pass
 
 To run the application please execute the following line :
 
-docker run -e -p 8080:8080 spacecraft-app
+docker run -p 8080:8080 spacecraft-app -e
 
 or if you want your own user and password you could user arguments
 
