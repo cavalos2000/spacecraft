@@ -16,7 +16,7 @@ public interface SpacecraftMapper {
     Spacecraft toModel(SpacecraftDto spacecraftDto);
     SpacecraftDto toDto(Spacecraft spacecraft);
     List<Spacecraft> toModelList(List<SpacecraftDto> spacecraftDtoList);
-    List<SpacecraftDto> toDtoList(List<Spacecraft> SpacecraftList);
+    List<SpacecraftDto> toDtoList(List<Spacecraft> spacecraftList);
 
     default Page<SpacecraftDto> toDtoPage(Page<Spacecraft> spacecraftPage) {
         List<SpacecraftDto> dtoList = toDtoList(spacecraftPage.getContent());
